@@ -103,7 +103,7 @@ const queries = require('./db_funcs')
 
                 })
 
-        //Funcoes de achar usuário
+        //Funções de achar usuário
                 socket.on('searchUser', received_data=>{
                     queries.get_list_of_users_by_name(received_data, (err, users_list)=>{
                         if(err){
@@ -113,6 +113,17 @@ const queries = require('./db_funcs')
 
                         socket.emit('usersFind', users_list)
                     })
+                })
+
+        //Funções de achar arquivos
+                socket.on('searchFileByUser', received_data=>{
+                    const user_id = received_data.user_id
+                    const search = received_data.search
+                    connection.query(`SELECT * FROM vw_uploads WHERE receiver_name LIKE '%${search}%' AND sender_id <> ${user_id}`,
+                    (err, rows, fields)=>{
+                        
+                    })
+
                 })
 
     })

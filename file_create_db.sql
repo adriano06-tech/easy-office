@@ -23,4 +23,26 @@ CREATE TABLE tb_messages (
         msg_user_id int NOT NULL,
         msg_text TEXT NOT NULL,
         msg_time DATETIME NOT NULL
-)
+);
+
+DROP TABLE IF EXISTS tb_uploads;
+
+CREATE TABLE tb_uploads(
+	id int AUTO_INCREMENT PRIMARY KEY,
+	sender_id int NOT NULL,
+    receiver_id int NOT NULL,
+    file_name TEXT NOT NULL,
+    file_formated_name TEXT NOT NULL,
+    file_extension VARCHAR(30) NOT NULL,
+    file_description TEXT NOT NULL,
+    upload_datetime DATETIME NOT NULL
+);
+
+DROP VIEW IF EXISTS vw_uploads;
+
+CREATE VIEW vw_uploads AS
+(SELECT us.file_id, us.file_name, us.file_formated_name, us.file_extension, us.file_description, us.upload_datetime, us.sender_id,
+us.sender_name, us.sender_email, us.receiver_id, ur.user_name as receiver_name, ur.email as receiver_email
+FROM (SELECT up.id as file_id, up.file_name, up.file_formated_name, up.file_extension, up.file_description,
+up.upload_datetime, us.id as sender_id, us.first_name as sender_name, us.email as sender_email, up.receiver_id as receiver_id
+FROM tb_uploads as up INNER JOIN tb_users as us ON up.sender_id = us.id) AS us INNER JOIN tb_users AS ur ON us.receiver_id = ur.id);

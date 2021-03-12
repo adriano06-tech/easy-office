@@ -113,7 +113,7 @@
 }
 
 .main_user_links{
-    height: 40vh;
+    height: 70vh;
 }
 
 .notificationsScroll{
@@ -143,7 +143,7 @@
         left: 0%;
     }
     .main_user_links{
-        height: 90vh;
+        height: 110vh;
     }
     .notificationsScroll{
         height: 40%;

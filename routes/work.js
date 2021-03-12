@@ -3,6 +3,10 @@ const router = express.Router()
 const connection = require('../db')
 const queries = require('../db_funcs')
 const socket_url = require('../socket_url')
+const multer = require('multer')
+const path = require('path')
+
+router.use(express.urlencoded({extended:true}))
 
 
 //Rota principal
@@ -169,7 +173,80 @@ const socket_url = require('../socket_url')
 
     })
 
+//Fazer upload dos arquivos
+    const storage = multer.diskStorage({
+        destination: (req, file, cb)=>{
+            cb(null, 'uploads/')
+        },
+        filename: (req, file, cb)=>{
+            if(!req.session.user_id){
+                return
+            }
 
+            const filename = Date.now() +  file.originalname
+            const formated_filename = file.originalname
+            const receiver_id = req.body.receiver_id
+            const sender_id = req.session.user_id
+            const file_description = req.body.file_description
+
+            connection.query(`INSERT INTO tb_uploads(
+                sender_id, receiver_id, file_name, file_formated_name, file_extension, file_description, upload_datetime
+            )
+                VALUES
+            (
+                ${sender_id}, ${receiver_id}, '${filename}', '${formated_filename}',
+                '${path.extname(filename)}', '${file_description}', NOW()
+            );`,
+            (err)=>{
+                if(err){
+                    console.log('Houve um erro: ' + err)
+                    return
+                }
+
+                cb(null, filename)
+
+
+            })
+
+        }
+
+    })
+
+    const upload = multer({storage})
+
+    router.post('/uploadFile', upload.single('file'), (req, res)=>{
+        if(!req.session.user_id){
+            res.redirect('/')
+            return
+        }
+        res.redirect('/work/showFilesUploadedByPerfil')
+
+
+    })
+//Renderizar arquivos já enviados pelo usuário
+    router.get('/showFilesUploadedByPerfil', (req, res)=>{
+        if(!req.session.user_id){
+            res.redirect('/')
+            return
+        }
+
+        connection.query(`SELECT *, HOUR(upload_datetime) as upload_hour, MINUTE(upload_datetime) as upload_minute 
+        FROM vw_uploads WHERE sender_id = ${req.session.user_id}`,
+        (err, rows, fields)=>{
+            if(rows.length == 0){
+                res.render('./work/see_files_uploaded_by_perfil/no_files_founded.handlebars')
+                return
+            }
+
+            res.render('./work/see_files_uploaded_by_perfil/index.handlebars',
+            {
+                data: rows[0],
+                uploads: rows,
+                socket_url: socket_url
+            })
+        })
+
+    })
 
 
 

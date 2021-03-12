@@ -1,0 +1,27 @@
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/3.1.0/socket.io.js" integrity="sha512-+l9L4lMTFNy3dEglQpprf7jQBhQsQ3/WvOnjaN/+/L4i0jOstgScV0q2TjfvRF4V+ZePMDuZYIQtg5T4MKr+MQ==" crossorigin="anonymous"></script>
+
+<h1>Esses foram os arquivos enviados por você, {{data.sender_name}}:</h1>
+
+<div style="display: none;" id="socket_url">{{socket_url}}</div>
+<div style="display: none;" id="user_id">{{data.sender_id}}</div>
+<label for="exampleDataList" class="form-label">Pesquisar arquivos por nome do usuário</label>
+<input onkeyup="searchFile()" class="form-control" id="inpSearchFile">
+
+<div id="filesList">
+    {{#each uploads}}
+        <div class="card card-body regular shadow mt-2 uploadsCointaners">
+            <h3 style="text-align: center;">
+                Enviado para
+                <a href="/work/renderAnotherPerfil{{receiver_id}}">{{receiver_name}}</a>:
+                <a href="/work/renderFile:{{file_id}}">{{file_formated_name}}</a>
+            </h3>
+            <hr>
+            <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {{file_description}}</p>
+            <p class="upload_time" style="font-weight: bold; text-align: right;">Enviado em {{upload_hour}}:{{upload_minute}}</p>
+        </div>
+    {{/each}}
+</div>
+
+
+
+<script src="/work/see_files_uploaded_by_perfil/scripts.js"></script>

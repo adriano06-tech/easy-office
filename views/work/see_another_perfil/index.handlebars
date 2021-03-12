@@ -1,11 +1,6 @@
 <link rel="stylesheet" href="/work/see_another_perfil/style.css">
 
 <h1 id="profile_apresentantion">Este é o perfil de {{profile.first_name}}, {{user.first_name}}</h1>
-<a id="linkGetBack" href="/">
-    <button class="btn btn-primary">
-        Voltar
-    </button>
-</a>
 
 <input style="display: none;" value="{{profile.email}}" id="copy_profile_email"/>
 <input style="display: none;" value="{{profile.tel}}" id="copy_profile_tel"/>
@@ -31,7 +26,24 @@
     <button onclick="copyProfileTel()" class="btn btn-primary mt-2">
         Copiar número de telefone de {{profile.first_name}}
     </button>
+    <hr>
+    <form enctype="multipart/form-data" class="mt-2" method="post" action="/work/uploadFile" id="uploadFileForm">
+        
+        <h3>Enviar arquivo para {{profile.first_name}}:</h3>
+        <label for="description">Comentários sobre o arquivo:</label>
+                <textarea id="description" class="form-control" name="file_description" form="uploadFileForm" rows="3" cols="10"></textarea>
+        <div class="input-group mt-2 mb-3">
+            <input type="text" name="receiver_id" style="display: none;" value="{{profile.id}}">
+            <input type="file" name="file" class="form-control" id="inputGroupFile02">
+        </div>
+        
+        <button class="btn btn-primary mt-2" style="position: absolute; right: 5%;" type="submit">
+            Enviar
+        </button>
+    </form>
+    <br><br>
 </div>
+    <br><br><br>
 
 
 
